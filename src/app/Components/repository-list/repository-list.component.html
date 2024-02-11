@@ -1,0 +1,99 @@
+<div *ngIf="user && user.repositories && user.repositories.length > 0">
+  <div class="container">
+    <div class="header">
+      <div>
+        <img *ngIf="user.avatar_url" [src]="user.avatar_url" alt="User Image" />
+      </div>
+      <div class="desc">
+        <p style="font-weight: bold; margin-top: 5px">{{ user.name }}</p>
+        <p>{{ user.bio }}</p>
+        <p>{{ user.location }}</p>
+        <p>
+          <span style="font-weight: bold">Twitter</span>: https://twitter.com/
+          <span>{{ user.twitter_username }}</span>
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-left: 10px">
+      {{ user.html_url }}
+    </div>
+
+    <div *ngIf="loading; else content">
+      <div class="repository-container skeleton">
+        <div class="repository" *ngFor="let _ of [1, 2, 3]"></div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #content>
+    <div *ngIf="user && user.repositories && user.repositories.length > 0">
+      <div class="repository-container">
+        <div
+          *ngFor="let repo of user.repositories; let i = index"
+          class="repository"
+        >
+          <div class="repository-row">
+            <div style="margin: 8px">
+              <a
+                [href]="repo.html_url"
+                style="color: lightskyblue; font-weight: bolder"
+                >{{ repo.name }}</a
+              >
+              <div>
+                <div>{{ repo.description }}</div>
+                <div class="topics">
+                  <div *ngFor="let topic of repo.topics" class="topics">
+                    <div style="background-color: blue; color: white">
+                      {{ topic }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!user || !user.repositories || user.repositories.length === 0">
+      <p>No repositories found for {{ username }}</p>
+    </div>
+
+    <div class="pagination">
+      <button
+        (click)="loadcheck(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        Prev
+      </button>
+
+      <ng-container *ngFor="let pageNumber of getPageNumbers()">
+        <button
+          (click)="loadcheck(pageNumber)"
+          [disabled]="currentPage === pageNumber"
+        >
+          {{ pageNumber }}
+        </button>
+      </ng-container>
+
+      <button
+        (click)="loadcheck(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >
+        Next
+      </button>
+
+      <label for="pageSize">Page Size:</label>
+      <select
+        id="pageSize"
+        [(ngModel)]="selectedPageSize"
+        (change)="loadcheck(1)"
+      >
+        <option *ngFor="let size of pageSizes" [value]="size">
+          {{ size }}
+        </option>
+      </select>
+    </div>
+  </ng-template>
+</div>

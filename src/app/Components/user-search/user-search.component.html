@@ -1,0 +1,13 @@
+<div class="styling">
+  <input
+    type="text"
+    name="searchUsername"
+    [(ngModel)]="searchUsername"
+    required
+    placeholder="Enter your user name "
+  />
+  <button (click)="search()" type="button">Search</button>
+  <div *ngIf="userNotFound" class="mt-4 text-red-500">
+    User not found. Please try again.
+  </div>
+</div>
